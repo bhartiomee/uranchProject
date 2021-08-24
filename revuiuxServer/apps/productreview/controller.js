@@ -77,8 +77,37 @@ const productReviewResponse = async (req, res) => {
     res.status(200).json(response);
   }
   catch (error) {
-    res.status(500).json({ messag: "Unexpected exception occured"});
+    res.status(500).json({ messag: "Unexpected exception occured" });
   }
 }
 
-module.exports = { addProductReview, productReviewList, researcherReviewList, productReviewResponse };
+const updateReviewStatus = async (req, res) => {
+  try {
+    const newReview = await ProductReview.update(
+      { reviewCompleted: 1 },
+      { where: { id: req.params.id  } }
+    );
+
+    const updatedReviewStatus = await ProductReview.findAll({
+      where: { id: req.params.id  }
+    })
+
+    if (!updatedReviewStatus[0]) {
+      res.status(404).json({ message: "Review does not exist" });
+    }
+    else {
+      res.status(200).json({  message: "Review updated Successfully" });
+    }
+  }
+  catch (err) {
+    console.log(err);
+    if (err instanceof ValidationError) {
+      res.status(400).json({ message: err.errors[0].message });
+    }
+    else {
+      res.status(500).json({ message: "Unexpected exception occured in model" });
+    }
+  }
+}
+
+module.exports = { addProductReview, productReviewList, researcherReviewList, productReviewResponse,updateReviewStatus };
