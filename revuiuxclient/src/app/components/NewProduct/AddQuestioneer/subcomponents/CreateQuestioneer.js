@@ -46,6 +46,7 @@ const CreateQuestioneer = (props) => {
       setIsErr(true);
     }
     else {
+      setIsErr(false);
       const newQuestion = { productId: productId, questionType: qtype, ...optionsText, ...question };
       setQstnRecords([...qstRecords, newQuestion])
       setQuestion({ questionStatement: "" });
